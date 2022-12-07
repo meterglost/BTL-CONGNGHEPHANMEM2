@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  db-admin:
+    image: mongo-express:latest
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - ME_CONFIG_MONGODB_SERVER=database
+    ports:
+      - 127.0.0.1:8081:8081
+    networks:
+      - backend
+
+  build-tailwindcss:
+    image: node:19-alpine
+    volumes:
+      - ./client/:/home/node/app/client/
+      - ./server/app/src/views/:/home/node/app/server/app/src/views/:ro
+    working_dir: /home/node/app/client/
+    tty: true
+    stdin_open: true
+    command: npm run dev -y
+
+networks:
+  backend:
+    driver: bridge

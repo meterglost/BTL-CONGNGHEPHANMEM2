@@ -1,0 +1,14 @@
+# Logs
+log/
+
+# Nodejs
+node_modules/
+dist/
+
+# Python
+__pycache__
+
+# Docker
+*.env
+.env.*
+!.env.example

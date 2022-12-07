@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply antialiased text-gray-900;
+}
+
+form input[name=username],
+form input[name=password] {
+    @apply
+        rounded-md outline-none border border-gray-300 focus:ring ring-sky-200
+        text-gray-900 text-sm
+        px-3 py-2
+    ;
+}
+
+form button[type=submit] {
+    @apply
+        rounded-md outline-none bg-sky-500 hover:bg-sky-600
+        text-white
+        px-3 py-2
+    ;
+}

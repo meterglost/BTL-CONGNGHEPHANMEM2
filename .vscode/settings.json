@@ -1,0 +1,11 @@
+{
+    "path-autocomplete.excludedItems": {
+        "**/{.git,node_modules}": { "when": "**" },
+    },
+    "path-autocomplete.pathMappings": {
+        "/asset/": "${workspace}/client/asset/",
+    },
+    "files.associations": {
+        "*.css": "tailwindcss"
+    }
+}

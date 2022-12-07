@@ -1,0 +1,41 @@
+<div class="
+    -z-10
+    absolute top-0 left-0
+    rotate-180
+    bg-[url('/asset/image/background.svg')] bg-cover bg-no-repeat bg-bottom
+    w-full h-80 md:h-auto
+    select-none
+">
+    <img src="/asset/image/background.svg" class="w-full h-auto invisible">
+</div>
+
+<main class="w-screen overflow-x-hidden md:max-h-screen">
+    <div class="grid grid-cols-1 md:grid-cols-2 items-stretch">
+        <div class="mx-10 mt-10">
+            <img src="/asset/image/Ecology_Isometric.svg" alt="" class="w-full h-auto">
+        </div>
+        <div class="mx-10 mt-10">
+            <form action="/login" method="post" class="max-w-md md:p-10 bg-white flex flex-col items-stretch gap-y-5">
+                <div class="text-2xl font-bold mb-5">
+                    Welcome, sign in to your account
+                </div>
+                <label>
+                    <div class="mb-1">Username</div>
+                    <input type="text" name="username" class="w-full">
+                </label>
+                <label>
+                    <div class="mb-1">Password</div>
+                    <input type="password" name="password" class="w-full">
+                </label>
+                <div class="flex flex-row flex-wrap items-center text-sm">
+                    <label class="mr-auto flex flex-row gap-x-2">
+                        <input type="checkbox" name="keepLogin">
+                        <div>Stay signed in</div>
+                    </label>
+                    <a href="/forgotPassword" class="ml-auto underline hover:text-sky-500">Forgot your password?</a>
+                </div>
+                <button type="submit" class="">Login</button>
+            </form>
+        </div>
+    </div>
+</main>

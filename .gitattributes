@@ -1,0 +1,11 @@
+*       text=auto eol=lf
+
+*.py    text diff=python
+
+*.css   text diff=css
+*.html  text diff=html
+
+*.png   binary
+*.jpg   binary
+
+*.md    text diff=markdown

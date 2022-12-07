@@ -1,0 +1,114 @@
+version: "3.8"
+
+services:
+  database:
+    image: mongo:6.0-focal
+    # restart: unless-stopped
+    configs:
+      - source: database-conf
+        target: /etc/mongod.conf
+    volumes:
+      - ./log/mongodb/:/var/log/mongodb/
+      - database:/data/db
+      - configdb:/data/configdb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - TZ
+    networks:
+      - backend
+    command: mongod --config /etc/mongod.conf
+
+  app-server:
+    build: ./server/app/
+    image: python-app-server:${COMPOSE_PROJECT_NAME}
+    # restart: unless-stopped
+    volumes:
+      - ./server/app/:/usr/src/app/:ro
+    environment:
+      - ACCESS_TOKEN_SECRET_KEY
+      - REFRESH_TOKEN_SECRET_KEY
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - TZ
+    networks:
+      - backend
+    depends_on:
+      - database
+    working_dir: /usr/src/app/
+    command: python -m src.app
+
+  web-server:
+    image: nginx:1.23.2-alpine
+    # restart: unless-stopped
+    configs:
+      - source: web-server-conf
+        target: /etc/nginx/nginx.conf
+    volumes:
+      - ./log/nginx/:/var/log/nginx/
+      - ./client/asset/:/var/www/html/asset/:ro
+      - ./server/app/src/views/error/:/var/www/html/error/:ro
+    environment:
+      - TZ
+    ports:
+      - 80:80
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - database
+      - app-server
+
+  gen-env:
+    image: python:3-alpine
+    volumes:
+      - ./:/usr/src/app/
+    working_dir: /usr/src/app/
+    command: python ./script/env.py
+    profiles:
+      - init
+
+  init-db:
+    build: ./server/app/
+    image: python-app-server:${COMPOSE_PROJECT_NAME}
+    volumes:
+      - ./server/app/:/usr/src/app/:ro
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - TZ
+    networks:
+      - backend
+    depends_on:
+      - database
+    working_dir: /usr/src/app/
+    command: python -m src.initdb
+    profiles:
+      - init
+
+  build-tailwindcss:
+    image: node:19-alpine
+    volumes:
+      - ./client/:/home/node/app/client/
+      - ./server/app/src/views/:/home/node/app/server/app/src/views/:ro
+    working_dir: /home/node/app/client/
+    command: npm run build -y
+    profiles:
+      - init
+
+configs:
+  database-conf:
+    file: ./database/mongod.conf
+
+  web-server-conf:
+    file: ./server/web/nginx.conf
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  database:
+  configdb:
